@@ -1,0 +1,84 @@
+/* Map styles */
+#map {
+    bottom: 0px;
+    left: 20%;
+    height: 100%;
+    position: absolute;
+    right: 0px;
+}
+
+/* Menu Pane styles */
+.menuPane {
+    border-left: 3px ridge darkslategrey;
+    border-right: 1px solid black;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 80%;
+    height: 95%;
+}
+
+.filter {
+    top: 0px;
+    height: auto;
+    background-color: darkslategray;
+    border-bottom: 5px inset darkslategray;
+}
+
+.filter-text{
+    display: block;
+    padding: 5px;
+    width: 100%;
+}
+
+.submit{
+    bottom: 0px;
+    display: block;
+    padding: 5px;
+    width: 100%;
+}
+
+.list {
+    height: 90%;
+}
+
+.list :hover {
+    background-color: rgba(255, 255, 0, 0.85);
+    cursor: default;
+}
+
+.location {
+    background-color: whitesmoke;
+    border: 1px solid black;   
+    display: block;
+    font-family: "Gill Sans", sans-serif;
+    font-size: auto;
+    height: auto;
+    padding: 10px;
+}
+
+
+/* Footer styles */
+footer {
+    background-color: darkslategrey;
+    border-top: 5px outset darkslategrey;
+    display: block;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 80%;
+    height: 5%;
+}
+
+footer > span {
+    display: block;
+}
+
+.footer-text {
+    text-align: center;
+    font-family: "Gill Sans", sans-serif;
+    /*font-family: fantasy;*/
+    font-size: medium;  
+    color: white;
+    padding-top: 5px;
+}
