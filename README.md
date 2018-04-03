@@ -24,6 +24,7 @@ To obtain a copy of this project download the entire contents of this repository
 1) Open `index.html` file in the folder you unzipped the files to.
 
 ## Source
+1) [Menu Button]
 
 ## References
 1) [Google Maps API Documentation]
@@ -36,4 +37,6 @@ Please use this project at your own risk. I, _J. Ye._, am not responsible for an
 ## License
 
 [Google Maps API Documentation]: https://developers.google.com/maps/documentation/javascript/
+[Menu Button]: https://www.w3schools.com/howto/howto_css_menu_icon.asp
+[Accordian]: https://getbootstrap.com/docs/4.0/components/collapse/
 
