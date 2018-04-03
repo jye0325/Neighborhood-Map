@@ -5,9 +5,13 @@
     height: 100%;
     position: absolute;
     right: 0px;
+    z-index: 0;
 }
 
 /* Menu Pane styles */
+#url {
+    font-size: 95%;
+}
 .menuPane {
     border-left: 3px ridge darkslategrey;
     border-right: 1px solid black;
@@ -19,23 +23,24 @@
 }
 
 .filter {
-    top: 0px;
-    height: auto;
+    display: inline-flex;
+    position: fixed;
+    z-index: 1;
+    margin-left: 50%;
+    margin-right: auto;
     background-color: darkslategray;
-    border-bottom: 5px inset darkslategray;
+    opacity: .8;
 }
 
-.filter-text{
-    display: block;
-    padding: 5px;
-    width: 100%;
+.filterText{
+    display: inline-block;
+    /*padding: 5px;*/
 }
 
 .submit{
     bottom: 0px;
-    display: block;
-    padding: 5px;
-    width: 100%;
+    display: inline-block;
+    /*padding: 5px;*/
 }
 
 .list {
@@ -50,13 +55,26 @@
 .location {
     background-color: whitesmoke;
     border: 1px solid black;   
-    display: block;
     font-family: "Gill Sans", sans-serif;
-    font-size: auto;
+    font-size: 400vw;
     height: auto;
-    padding: 10px;
+    word-wrap: hidden;
+    /*
+     display: block;
+    padding: 10px;*/
 }
 
+/* InfoWindow styles */
+.infoWindow {
+    
+}
+.infoTitle {
+    font-size: medium;
+}
+
+.infoContent {
+    font-size: small;
+}
 
 /* Footer styles */
 footer {

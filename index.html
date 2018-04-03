@@ -2,28 +2,79 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- Meta Data -->
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Neighborhood Map</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="css/style.css" />
+    <!-- Stylesheets Based On Device Width -->
+    <link rel="stylesheet" type="text/css" media="screen and (min-width:769px)" href="css/desktop/style.css" />
+    <link rel="stylesheet" type="text/css" media="screen and (max-width:768px)" href="css/mobile/style.css" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
-    <div class="menuPane">
-        <div class="filter">
-            <input type="text" class="filter-text">
-            <button type="button" class="submit">Filter</button>
-        </div>
+    <!-- Google Map -->
+    <div id="map"></div>
+    
+    <!-- Menu Button -->
+    <div class="menuButton" onclick="myFunction(this)" id="menu-button">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+    </div>
+    
+    <!-- Filter Area -->
+    <div class="filter">
+        <form data-bind="submit: filter">
+            <input type="text" class="filterText" data-bind="textInput: filterText" placeholder="Filter Locations">
+            <button type="submit" class="submit">Filter</button>
+        </form>
+     </div>
+    
+    <!-- Menu Area -->
+    <div class="menuPane" id="accordion">
         <div class="list" data-bind="foreach: locationList">
-           <div class="location" data-bind="text: title"> </div>
+            <div class="card">
+                <div class="card-header" data-bind="attr:{id: index}">
+                    <h5 class="mb-0">
+                            <button class="btn btn-link collapsed location" data-toggle="collapse" aria-expanded="false" data-bind="attr: {'data-target': dataTarget, 'aria-controls': name}" onclick="">
+                                <span data-bind="text: name"></span>
+                            </button>
+                    </h5>
+                </div>
+            </div>
+            <div data-bind="attr:{id: name, 'aria-labelledby': index}" class="collapse" data-parent="#accordion">
+                <div class="card-body">
+                    <p data-bind="text: address"></p>
+                    <p data-bind="text: phone"></p>
+                    <a data-bind="attr:{href:url}"><p id="url" data-bind="text: url"></p></a>
+                </div>
+            </div>
         </div>
     </div>
-    <div id="map"><!-- Maybe use data-bind? --></div>
-    <footer>
+
+    <footer class="footerArea">
         <span class = "footer-text">Neighborhood-Map</span>
     </footer>
+    <!-- Knockout JS -->
     <script src="js/lib/knockout-3.2.0.js"></script>
+    <!-- Boostrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!-- Application JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="js/app.js"></script>
+    <!-- Google Maps API -->
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDI30dQAKyuiSaQrxJzjidYslz-PkLpW6s&v=3&callback=initMap"></script>
+    <!-- Script for Menu Button Animation -->
+    <script>
+        function myFunction(x) {
+            x.classList.toggle("change");
+            y = parent.document.getElementById("accordion");
+            y.classList.toggle("show");
+        }
+    </script>
 </body>
 </html>
