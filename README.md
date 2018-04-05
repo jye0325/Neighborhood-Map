@@ -1,7 +1,7 @@
 
 # Neighborhood-Map
 
-#### v0.2.0
+#### v0.3.1
 
 The **Neighborhood-Map** is a project written for **Udacity's Full Stack Developer Nanodegree Program**.
 
@@ -25,6 +25,7 @@ To obtain a copy of this project download the entire contents of this repository
 
 ## Source
 1) [Menu Button]
+2) [Accordian]
 
 ## References
 1) [Google Maps API Documentation]

@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v0.3.1] - 2018-04-05
+### Added
+- Added function to animate accordian display on mobile version when pressed.
+
+### Changed
+- Changed array of locations that are to be displayed on Google Maps in `app.js`.
+- Changed filter button location for mobile and web version in `index.html`.
+- Changed accordian style and display for mobile and web version in `index.html`.
+
+### Fixed
+- Fixed accidental revert of `v0.3.0`.
+- Fixed minor naming convention of version semantics from `[0.3.0]` to `v0.3.0`.
+
 ## [v0.3.0] - 2018-03-18
 ### Added
 - Added bootstrap elements to `index.html`.
@@ -36,6 +49,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added preliminary files `index.html` and `app.js`.
 - Added `.gitignore` to prevent `.DS_Store` from being pushed to GitHub.
 
-[Unreleased]: https://github.com/jye0325/Neighborhood-Map/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/jye0325/Neighborhood-Map/compare/v0.3.1...HEAD
+[v0.3.1]: https://github.com/jye0325/Neighborhood-Map/compare/v0.3.0...v0.3.1
 [v0.3.0]: https://github.com/jye0325/Neighborhood-Map/compare/v0.2.0...v0.3.0
 [v0.2.0]: https://github.com/jye0325/Neighborhood-Map/compare/v0.1.0...v0.2.0
