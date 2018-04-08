@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v0.4.0] - 2018-04-08
+### Added
+- Added function, `filterEntries()` to automatically filter entries and markers based on `filterText` in `app.js`.
+- Added variable `globalAccess` to point to the ViewModel and allow outside access to functions in the ViewModel.
+
+### Changed
+- Placed accordian cards in a new `<div>` called entries to allow easier filtering in `index.html`.
+- Changed `Knockout.Js` script source from 3.2 to the latest version.
+
+### Fixed
+- Fixed issue with InfoWindows not being able to retrieve data from `locationList()` observable array.
+
+### Removed
+- Removed any unnecessary or redundant code in `app.js`.
+- Removed debugging scripts,  `console.log()`.
+
 ## [v0.3.1] - 2018-04-05
 ### Added
 - Added function to animate accordian display on mobile version when pressed.
@@ -31,7 +47,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Changed the `.css` stylesheet rendered based on the type of device you are viewing the website on.
 
 ### Removed
-- Removed any unncessary or redundant code in `app.js`.
+- Removed any unnecessary or redundant code in `app.js`.
 
 ## [v0.2.0] - 2018-03-06
 ### Added

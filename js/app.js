@@ -132,8 +132,8 @@ function initMap() {
             toggleInfoWindow(this, infowindow);
         });
 
-         // Hold the markers in an array
-         markers.push(marker);
+        // Hold the markers in an array
+        markers.push(marker);
     }
 
     // Fixes the viewport
@@ -143,18 +143,24 @@ function initMap() {
     function toggleInfoWindow(marker, infowindow){
         // Check if infowindow is not already opened on this marker.
         if (infowindow.marker != marker) {
+            var address = globalAccess.viewModel.populate(marker.index);
             infowindow.marker = marker;
             infowindow.maxWidth = 200;
-            infowindow.setContent('<div data-bind="with: $root.locationList()[' + marker.index + ']"> <div class="infoWindow">' + 
-                '<div class="infoTitle"> <p data-bind="text: name"> </p></div>' + 
-                '<div class="infoContent">' + marker.content + '</div></div></div>');
+            infowindow.setContent(address);
             infowindow.open(map, marker);
             infowindow.addListener('closeclick', function () {
                 infowindow.marker = null;
             });
         }
-    }
-}
+    };
+    /*
+    $(document).ready(function(){
+        $("form").submit(function(){
+            alert("Submitted");
+        });
+    });
+    */
+};
 
 // Five hardcoded locations
 // All of this information is for reference
@@ -246,7 +252,7 @@ var ViewModel = function () {
                         console.log('Error ' + code + ': Please see ' + FOURSQUARE_ERROR_REFERENCE + 'for more informaiton');
                     }
                 })
-            .fail(function(){ window.alert("Failed query");});
+            .fail(function(){ console.log("Failed query");});
     });
 
     // An click event handler when one of the locations is clicked on 
@@ -257,13 +263,38 @@ var ViewModel = function () {
     };
 
     // Automatically update the locations as you type into the filter textbox
-    this.filterText = ko.observable("");    
+    this.filterText = ko.observable("");
+    this.filterEntries = function(){
+        var input;
+        input = this.filterText().toUpperCase();
+        entries = document.getElementsByClassName("entries");
+        for (i=0; i<entries.length; i++){
+            var entry;
+            entry = entries[i].getElementsByTagName("span")[0];
+            if(entry.innerHTML.toUpperCase().indexOf(input) > -1){
+                entries[i].style.display = "";
+                markers[i].setMap(map);
+            } else {
+                entries[i].style.display = "none";
+                markers[i].setMap(null);
+            }
+
+        }
+    };
 
     // An event handler when the filter button is clicked on
     this.filter = function () {
         // To be updated!
-        window.alert("This is a test");
     };
+
+    // A function for Google Maps InfoWindow to populate with Foursquare Info
+    this.populate = function (index){
+        var name = this.locationList()[index].name();
+        var address = this.locationList()[index].address();
+        var script = "<div><p>" + name + "</p> <p>" + address + "</p></div>"; 
+        return script;
+    };
+
 };
 
 // Model - Defines the data for the ViewModel
@@ -284,4 +315,7 @@ var Location = function(data) {
     });
 };
 
-ko.applyBindings(new ViewModel());
+// Stores the view Model in a function so that Google Maps can access it later
+globalAccess  = {viewModel: new ViewModel()};
+ko.applyBindings(globalAccess.viewModel);
+//ko.applyBindings(new ViewModel());

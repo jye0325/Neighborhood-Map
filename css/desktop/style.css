@@ -12,6 +12,11 @@
 #url {
     font-size: 95%;
 }
+
+#entry {
+    display: show;
+}
+
 .menuPane {
     border-left: 3px ridge darkslategrey;
     border-right: 1px solid black;
@@ -28,11 +33,10 @@
     z-index: 1;
     margin-left: 50%;
     margin-right: auto;
-    background-color: darkslategray;
     opacity: .8;
 }
 
-.filterText{
+#filterText{
     display: inline-block;
     /*padding: 5px;*/
 }
@@ -48,7 +52,7 @@
 }
 
 .list :hover {
-    background-color: rgba(255, 255, 0, 0.85);
+    /* background-color: rgba(255, 255, 0, 0.85); */
     cursor: default;
 }
 
@@ -58,7 +62,7 @@
     font-family: "Gill Sans", sans-serif;
     font-size: 400vw;
     height: auto;
-    word-wrap: hidden;
+    word-wrap: break-word;
     /*
      display: block;
     padding: 10px;*/

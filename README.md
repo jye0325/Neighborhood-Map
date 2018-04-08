@@ -1,13 +1,16 @@
 
 # Neighborhood-Map
 
-#### v0.3.1
+#### v0.4.0
 
 The **Neighborhood-Map** is a project written for **Udacity's Full Stack Developer Nanodegree Program**.
 
 In this project, a single web application will display a menu pane populated with five hardcoded locations and a Google Map with markers displaying those five locations.
 
 > [To be Updated!]
+
+## Known Issues
+- Markers does is not populating in the correct locations in desktop version.
 
 ## Requirments
 

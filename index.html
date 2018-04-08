@@ -26,29 +26,28 @@
     
     <!-- Filter Area -->
     <div class="filter">
-        <form data-bind="submit: filter">
-            <input type="text" class="filterText" data-bind="textInput: filterText" placeholder="Filter Locations">
-            <button type="submit" class="submit">Filter</button>
-        </form>
+        <input type="text" data-bind="textInput: filterText, event: {keyup:filterEntries}" placeholder="Filter Locations">
      </div>
     
     <!-- Menu Area -->
     <div class="menuPane" id="accordion">
         <div class="list" data-bind="foreach: locationList">
-            <div class="card">
-                <div class="card-header" data-bind="attr:{id: index}">
-                    <h5 class="mb-0">
-                            <button class="btn btn-link collapsed location" data-toggle="collapse" aria-expanded="false" data-bind="attr: {'data-target': dataTarget, 'aria-controls': name}" onclick="">
-                                <span data-bind="text: name"></span>
-                            </button>
-                    </h5>
+            <div class="entries">
+                <div class="card">
+                    <div class="card-header" data-bind="attr:{id: index}">
+                        <h5 class="mb-0">
+                                <button class="btn btn-link collapsed location" data-toggle="collapse" aria-expanded="false" data-bind="attr: {'data-target': dataTarget, 'aria-controls': name}" onclick="">
+                                    <span data-bind="text: name"></span>
+                                </button>
+                        </h5>
+                    </div>
                 </div>
-            </div>
-            <div data-bind="attr:{id: name, 'aria-labelledby': index}" class="collapse" data-parent="#accordion">
-                <div class="card-body">
-                    <p data-bind="text: address"></p>
-                    <p data-bind="text: phone"></p>
-                    <a data-bind="attr:{href:url}"><p id="url" data-bind="text: url"></p></a>
+                <div data-bind="attr:{id: name, 'aria-labelledby': index}" class="collapse" data-parent="#accordion">
+                    <div class="card-body">
+                        <p data-bind="text: address"></p>
+                        <p data-bind="text: phone"></p>
+                        <a data-bind="attr:{href:url}"><p id="url" data-bind="text: url"></p></a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -58,7 +57,7 @@
         <span class = "footer-text">Neighborhood-Map</span>
     </footer>
     <!-- Knockout JS -->
-    <script src="js/lib/knockout-3.2.0.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
     <!-- Boostrap JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
