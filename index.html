@@ -3,7 +3,7 @@
 <html>
 <head>
     <!-- Meta Data -->
-    <meta charset="utf-8" />
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Neighborhood Map</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,9 +14,6 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
-    <!-- Google Map -->
-    <div id="map"></div>
-    
     <!-- Menu Button -->
     <div class="menuButton" onclick="myFunction(this)" id="menu-button">
         <div class="bar1"></div>
@@ -25,7 +22,7 @@
     </div>
     
     <!-- Filter Area -->
-    <div class="filter">
+    <div class="filter" id="filter">
         <input type="text" data-bind="textInput: filterText, event: {keyup:filterEntries}" placeholder="Filter Locations">
      </div>
     
@@ -34,9 +31,9 @@
         <div class="list" data-bind="foreach: locationList">
             <div class="entries">
                 <div class="card">
-                    <div class="card-header" data-bind="attr:{id: index}">
+                    <div class="card-header" data-bind="attr:{'id': index}">
                         <h5 class="mb-0">
-                                <button class="btn btn-link collapsed location" data-toggle="collapse" aria-expanded="false" data-bind="attr: {'data-target': dataTarget, 'aria-controls': name}" onclick="">
+                                <button class="btn btn-link collapsed location" data-toggle="collapse" aria-expanded="false" data-bind="attr: {'data-target': dataTarget, 'aria-controls': name}, event: {'click': $parent.toggleMarker(index())}">
                                     <span data-bind="text: name"></span>
                                 </button>
                         </h5>
@@ -52,6 +49,9 @@
             </div>
         </div>
     </div>
+
+    <!-- Google Map -->
+    <div id="map"></div>
 
     <footer class="footerArea">
         <span class = "footer-text">Neighborhood-Map</span>
@@ -72,7 +72,9 @@
         function myFunction(x) {
             x.classList.toggle("change");
             y = parent.document.getElementById("accordion");
+            z = parent.document.getElementById("filter");
             y.classList.toggle("show");
+            z.classList.toggle("show");
         }
     </script>
 </body>

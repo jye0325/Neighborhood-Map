@@ -4,11 +4,13 @@ function getHour () {
     var h =  d.getHours();
     return h;
 }
+
 var hour = getHour();
 
-
 var map;
+var infowindow;
 var markers = [];
+var infowindowIsOpen = true;
 // Google Map Initializer
 function initMap() {
     // Styles Google Maps based on day-time or night-time.
@@ -109,7 +111,7 @@ function initMap() {
     });
 
     // InfoWindow Initializer
-    var infowindow = new google.maps.InfoWindow();
+    infowindow = new google.maps.InfoWindow();
 
     // Boundary Initializer
     var bounds = new google.maps.LatLngBounds();
@@ -120,8 +122,7 @@ function initMap() {
             position: bookmarkLocations[i].position,
             map: map,
             animation: google.maps.Animation.DROP,
-            // Fix it so that it's bookmarkLocations[i].index and not i
-            index: i
+            index: i,
         });
 
         // Extends viewport boundary
@@ -143,31 +144,30 @@ function initMap() {
     function toggleInfoWindow(marker, infowindow){
         // Check if infowindow is not already opened on this marker.
         if (infowindow.marker != marker) {
-            var address = globalAccess.viewModel.populate(marker.index);
+            var info = globalAccess.viewModel.populate(marker.index);
             infowindow.marker = marker;
             infowindow.maxWidth = 200;
-            infowindow.setContent(address);
+            infowindow.setContent(info);
             infowindow.open(map, marker);
+            infowindowIsOpen = true;
             infowindow.addListener('closeclick', function () {
                 infowindow.marker = null;
+                infowindowIsOpen = false;
             });
         }
-    };
-    /*
-    $(document).ready(function(){
-        $("form").submit(function(){
-            alert("Submitted");
-        });
-    });
-    */
-};
+    }
+
+    function toggleMarker(index){
+
+    }
+}
 
 // Five hardcoded locations
 // All of this information is for reference
 var bookmarkLocations = [
     {
         // L&B Spumoni Gardens
-        name: '',
+        name: 'L&B Spumoni Gardens',
         address: '',
         phone: '',
         url: '',
@@ -177,7 +177,7 @@ var bookmarkLocations = [
     },
     {
         // Barclay's Center
-        name: '',
+        name: 'Barclay\'s Center',
         address: '',
         phone: '',
         url: '',
@@ -187,7 +187,7 @@ var bookmarkLocations = [
     },
     {
         // Ichiran
-        name: '',
+        name: 'Ichiran',
         address: '',
         phone: '',
         url: '',
@@ -197,7 +197,7 @@ var bookmarkLocations = [
     },
     {
         // Peter Luger Steak House
-        name: '',
+        name: 'Peter Luger Steak House',
         address: '',
         phone: '',
         url: '',
@@ -207,14 +207,14 @@ var bookmarkLocations = [
     },
     {
         // Grimaldi's Pizzaria
-        name: '',
+        name: 'Grimaldi\'s Pizzaria',
         address: '',
         phone: '',
         url: '',
         description: '', 
         position: {lat: 40.702604, lng: -73.99322},
         index: 4
-    },
+    }
 ];
 
 // ViewModel - Defines the data and behavior of my UI
@@ -231,7 +231,6 @@ var ViewModel = function () {
     // Pass the initial 5 hardcoded locations into the observableArray
     bookmarkLocations.forEach(
         function(location){
-            location.index = bookmarkLocations.index;
             var lat = location.position.lat;
             var lng = location.position.lng;
             $.getJSON("https://api.foursquare.com/v2/venues/search?client_id="+client_id+"&client_secret="+client_secret+"&ll="+lat+","+lng+"&v=20180307", 
@@ -240,8 +239,7 @@ var ViewModel = function () {
                     var venue = data.response.venues[0];
                     var FOURSQUARE_ERROR_REFERENCE = 'https://developer.foursquare.com/docs/api/troubleshooting/errors';
                     if(code == '200'){
-                        console.log('Successfully query of JSON response');
-                        console.log(venue.name);
+                        console.log('Successfully query of JSON response for: ' + venue.name);
                         location.name = venue.name;
                         location.address = venue.location.formattedAddress[0] + ", " + venue.location.formattedAddress[1];
                         location.phone = venue.contact.formattedPhone;
@@ -257,9 +255,18 @@ var ViewModel = function () {
 
     // An click event handler when one of the locations is clicked on 
     // in the Menu Pane
-    this.toggleMarker = function () {
-        // To be updated!
-        window.alert("This is a test.");
+    this.toggleMarker = function (index) {
+        if(infowindowIsOpen == true){
+            // If InfoWindow is already open
+            infowindow.close();
+            infowindow.marker = null;
+            infowindowIsOpen = false;
+        } else {
+            // If InfoWindow is not open
+            var marker = markers[index];
+            google.maps.event.trigger(marker, 'click');
+            infowindowIsOpen = true;
+        }
     };
 
     // Automatically update the locations as you type into the filter textbox
@@ -269,29 +276,36 @@ var ViewModel = function () {
         input = this.filterText().toUpperCase();
         entries = document.getElementsByClassName("entries");
         for (i=0; i<entries.length; i++){
-            var entry;
+            // Find the corresponding index for marker and entry
+            var eIndex, entry;
             entry = entries[i].getElementsByTagName("span")[0];
+            eIndex = entries[i].getElementsByTagName("div")[1].getAttribute("id");
             if(entry.innerHTML.toUpperCase().indexOf(input) > -1){
                 entries[i].style.display = "";
-                markers[i].setMap(map);
+                markers[eIndex].setMap(map);
+                // Markers will not bounce when clearing the filter input
+                if (input != ""){
+                    markers[eIndex].setAnimation(google.maps.Animation.BOUNCE);
+                }
             } else {
                 entries[i].style.display = "none";
-                markers[i].setMap(null);
+                markers[eIndex].setMap(null);
             }
 
         }
     };
 
-    // An event handler when the filter button is clicked on
-    this.filter = function () {
-        // To be updated!
-    };
-
     // A function for Google Maps InfoWindow to populate with Foursquare Info
     this.populate = function (index){
-        var name = this.locationList()[index].name();
-        var address = this.locationList()[index].address();
-        var script = "<div><p>" + name + "</p> <p>" + address + "</p></div>"; 
+        var location;
+        for(i = 0; i < this.locationList().length; i++){
+            if(this.locationList()[i].index() == index){
+                location = this.locationList()[i];
+            }
+        }
+        var name = location.name();
+        var address = location.address();
+        var script = "<div id=" + index + "><p>" + name + "</p><p>" + address + "</p></div>"; 
         return script;
     };
 

@@ -27,7 +27,7 @@
     height: 95%;
 }
 
-.filter {
+#filter {
     display: inline-flex;
     position: fixed;
     z-index: 1;
