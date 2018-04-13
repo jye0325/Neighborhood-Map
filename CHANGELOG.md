@@ -4,7 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [v0.5.0-rc] - 2018-04-10
+## [0.5.1] - 2018-04-12
+### Added
+- Added comments to `index.html` and `app.js` outline future code refactoring/depracting/deletions.
+
+## [v0.5.0-rc] - 2018-04-11
 ### Added
 - Added filter function to the mobile site in `mobile/style.css`.
 - Added feature where a marker will open its' InfoWindow if you expand the corresponding accordian item.

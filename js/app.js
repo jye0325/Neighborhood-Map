@@ -1,19 +1,21 @@
-// Get system time
+// [KEEP] Function that Returns System Time
 function getHour () {
     var d = new Date();
     var h =  d.getHours();
     return h;
 }
 
+// [KEEP] Obtains the System Time
 var hour = getHour();
 
 var map;
 var infowindow;
 var markers = [];
 var infowindowIsOpen = true;
-// Google Map Initializer
+
+// [KEEP] Google Map Initializer
 function initMap() {
-    // Styles Google Maps based on day-time or night-time.
+    // [KEEP] Styles Google Maps based on day-time or night-time. 
     var styles;
     if (hour <= 6 || hour >= 18){
         // Night-time
@@ -102,6 +104,7 @@ function initMap() {
         styles = [];
     }
 
+    // [KEEP] Creates a new instance of Google Maps
     map = new google.maps.Map(document.getElementById('map'),{
         // Centered location is at my house
         center: {lat: 40.59784399999999, lng: -73.97898839999999},
@@ -110,14 +113,15 @@ function initMap() {
         styles: styles
     });
 
-    // InfoWindow Initializer
+    // [REMOVE/DEPRACATE] InfoWindow Initializer
     infowindow = new google.maps.InfoWindow();
 
-    // Boundary Initializer
+    // [KEEP] Boundary Initializer
     var bounds = new google.maps.LatLngBounds();
     
+    // [REFACTOR] Creates (5) hardcoded markers
     for (var i = 0; i < bookmarkLocations.length; i++){
-        // Marker Initializer
+        // [REFACTOR] Marker Initializer
         var marker = new google.maps.Marker({
             position: bookmarkLocations[i].position,
             map: map,
@@ -125,22 +129,22 @@ function initMap() {
             index: i,
         });
 
-        // Extends viewport boundary
+        // [KEEP] Extends viewport boundary
         bounds.extend(marker.position);
 
-        // Marker Event Handler
+        // [REFACTOR] Marker Event Handler
         marker.addListener('click', function() {
             toggleInfoWindow(this, infowindow);
         });
 
-        // Hold the markers in an array
+        // [REFACTOR] Hold the markers in an array
         markers.push(marker);
     }
 
-    // Fixes the viewport
+    // [KEEP] Fixes the viewport
     map.fitBounds(bounds);
 
-    // Creates a function that displays the information of the clicked marker.
+    // [REMOVE/DEPRACATE] Creates a function that displays the information of the clicked marker.
     function toggleInfoWindow(marker, infowindow){
         // Check if infowindow is not already opened on this marker.
         if (infowindow.marker != marker) {
@@ -157,13 +161,15 @@ function initMap() {
         }
     }
 
+    // [REMOVE]
     function toggleMarker(index){
 
     }
 }
 
-// Five hardcoded locations
-// All of this information is for reference
+// [KEEP/REFACTOR] Five Hardcoded Locations 
+// - By default, these locations will have default information in case of:
+//   Foursquare API Failed Query
 var bookmarkLocations = [
     {
         // L&B Spumoni Gardens
@@ -217,18 +223,18 @@ var bookmarkLocations = [
     }
 ];
 
-// ViewModel - Defines the data and behavior of my UI
+// [KEEP] ViewModel - Defines the data and behavior of my UI
 var ViewModel = function () {
     var self = this;
 
-    // API KEYS for FourSquare
+    // [KEEP] API KEYS for FourSquare
     var client_id = 'DI2FHGCELBERLPRHWBRH1DBXEMMHML1OY1CUPMA2K31H4YN2';
     var client_secret = 'RILIOHICFEPSBPONF0Q0CTTRQJM5HO44RDAAJLGGD2VMGKC5';
 
-    // Creates an observableArray to hold the locations for the Menu Pane
+    // [REFACTOR] Creates an observableArray to Hold the Locations for the Menu Pane
     this.locationList = ko.observableArray([]);
 
-    // Pass the initial 5 hardcoded locations into the observableArray
+    // [REFACTOR] Passes the Initial (5) Hardcoded Locations into the observableArray
     bookmarkLocations.forEach(
         function(location){
             var lat = location.position.lat;
@@ -253,7 +259,7 @@ var ViewModel = function () {
             .fail(function(){ console.log("Failed query");});
     });
 
-    // An click event handler when one of the locations is clicked on 
+    // [REFACTOR] An click event handler when one of the locations is clicked on 
     // in the Menu Pane
     this.toggleMarker = function (index) {
         if(infowindowIsOpen == true){
@@ -269,7 +275,7 @@ var ViewModel = function () {
         }
     };
 
-    // Automatically update the locations as you type into the filter textbox
+    // [REFACTOR] Automatically Updates the Locations as You Type into the Filter Textbox
     this.filterText = ko.observable("");
     this.filterEntries = function(){
         var input;
@@ -295,7 +301,7 @@ var ViewModel = function () {
         }
     };
 
-    // A function for Google Maps InfoWindow to populate with Foursquare Info
+    // [REFACTOR/REMOVE] A Function for Google Maps InfoWindow to Populate with Foursquare Info
     this.populate = function (index){
         var location;
         for(i = 0; i < this.locationList().length; i++){
@@ -311,8 +317,9 @@ var ViewModel = function () {
 
 };
 
-// Model - Defines the data for the ViewModel
+// [KEEP] Model - Defines the data for the ViewModel
 var Location = function(data) {
+    // [REFACTOR] NEEDS REFACTORING
     this.index = ko.observable(data.index);
     this.name = ko.observable(data.name);
     this.address = ko.observable(data.address);
@@ -329,7 +336,7 @@ var Location = function(data) {
     });
 };
 
-// Stores the view Model in a function so that Google Maps can access it later
+// [REFACTOR] Stores the view Model in a function so that Google Maps can access it later
 globalAccess  = {viewModel: new ViewModel()};
 ko.applyBindings(globalAccess.viewModel);
 //ko.applyBindings(new ViewModel());

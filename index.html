@@ -14,19 +14,19 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
-    <!-- Menu Button -->
+    <!-- Menu Button [KEEP] -->
     <div class="menuButton" onclick="myFunction(this)" id="menu-button">
         <div class="bar1"></div>
         <div class="bar2"></div>
         <div class="bar3"></div>
     </div>
     
-    <!-- Filter Area -->
+    <!-- Filter Area [REFACTOR] -->
     <div class="filter" id="filter">
         <input type="text" data-bind="textInput: filterText, event: {keyup:filterEntries}" placeholder="Filter Locations">
      </div>
     
-    <!-- Menu Area -->
+    <!-- Menu Area [REFACTOR] -->
     <div class="menuPane" id="accordion">
         <div class="list" data-bind="foreach: locationList">
             <div class="entries">
@@ -65,9 +65,9 @@
     <!-- Application JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="js/app.js"></script>
-    <!-- Google Maps API -->
+    <!-- Google Maps API [REFACTOR] -->
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDI30dQAKyuiSaQrxJzjidYslz-PkLpW6s&v=3&callback=initMap"></script>
-    <!-- Script for Menu Button Animation -->
+    <!-- Script for Menu Button Animation [KEEP/REFACTOR] -->
     <script>
         function myFunction(x) {
             x.classList.toggle("change");
