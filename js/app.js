@@ -112,59 +112,43 @@ function initMap() {
         mapTypeControl: false,
         styles: styles
     });
-
+/*
     // [REMOVE/DEPRACATE] InfoWindow Initializer
     infowindow = new google.maps.InfoWindow();
-
+*/
     // [KEEP] Boundary Initializer
     var bounds = new google.maps.LatLngBounds();
     
-    // [REFACTOR] Creates (5) hardcoded markers
-    for (var i = 0; i < bookmarkLocations.length; i++){
-        // [REFACTOR] Marker Initializer
-        var marker = new google.maps.Marker({
-            position: bookmarkLocations[i].position,
+    // [NEW] Creates (5) Hardcoded Locations Using forEach()
+    bookmarkLocations.forEach(function(marker,index){
+        marker = new google.maps.Marker({
+            position: bookmarkLocations[index].position,
             map: map,
             animation: google.maps.Animation.DROP,
-            index: i,
+            index: index,
         });
 
-        // [KEEP] Extends viewport boundary
         bounds.extend(marker.position);
 
-        // [REFACTOR] Marker Event Handler
         marker.addListener('click', function() {
-            toggleInfoWindow(this, infowindow);
+            toggleBounce(this);
         });
-
-        // [REFACTOR] Hold the markers in an array
+        
         markers.push(marker);
-    }
+    });
 
     // [KEEP] Fixes the viewport
     map.fitBounds(bounds);
 
-    // [REMOVE/DEPRACATE] Creates a function that displays the information of the clicked marker.
-    function toggleInfoWindow(marker, infowindow){
-        // Check if infowindow is not already opened on this marker.
-        if (infowindow.marker != marker) {
-            var info = globalAccess.viewModel.populate(marker.index);
-            infowindow.marker = marker;
-            infowindow.maxWidth = 200;
-            infowindow.setContent(info);
-            infowindow.open(map, marker);
-            infowindowIsOpen = true;
-            infowindow.addListener('closeclick', function () {
-                infowindow.marker = null;
-                infowindowIsOpen = false;
-            });
+    // [NEW] Toggle Bounce
+    function toggleBounce(marker) {
+        // Needs a check to see if any other markers are bouncing.
+        if (marker.getAnimation() !== null) {
+          marker.setAnimation(null);
+        } else {
+          marker.setAnimation(google.maps.Animation.BOUNCE);
         }
-    }
-
-    // [REMOVE]
-    function toggleMarker(index){
-
-    }
+      }
 }
 
 // [KEEP/REFACTOR] Five Hardcoded Locations 
@@ -225,16 +209,25 @@ var bookmarkLocations = [
 
 // [KEEP] ViewModel - Defines the data and behavior of my UI
 var ViewModel = function () {
-    var self = this;
+    // [REMOVE?] Haven't really used this.
+    // var self = this;
 
     // [KEEP] API KEYS for FourSquare
     var client_id = 'DI2FHGCELBERLPRHWBRH1DBXEMMHML1OY1CUPMA2K31H4YN2';
     var client_secret = 'RILIOHICFEPSBPONF0Q0CTTRQJM5HO44RDAAJLGGD2VMGKC5';
 
-    // [REFACTOR] Creates an observableArray to Hold the Locations for the Menu Pane
+    // [KEEP] Creates an observableArray to Hold the Locations for the Menu Pane
     this.locationList = ko.observableArray([]);
-
-    // [REFACTOR] Passes the Initial (5) Hardcoded Locations into the observableArray
+/*
+    // [NEW] Returns Items to index.html if Filter Returns True
+    this.displayedLocation = ko.computed(function(){
+        this.locationList.forEach(
+            function(){
+            }
+        );
+    }).extend({notify:'always'});
+*/
+    // [KEEP] Passes the Initial (5) Hardcoded Locations into the observableArray
     bookmarkLocations.forEach(
         function(location){
             var lat = location.position.lat;
@@ -253,12 +246,20 @@ var ViewModel = function () {
                         self.locationList.push( new Location(location) );
                     } 
                     else{
+                        // For my Reference
                         console.log('Error ' + code + ': Please see ' + FOURSQUARE_ERROR_REFERENCE + 'for more informaiton');
+                        // [Temporary Fix] Notification for End Users
+                        window.alert("Error code: " + code + " -- " + FOURSQUARE_ERROR_REFERENCE);
                     }
                 })
-            .fail(function(){ console.log("Failed query");});
+            .fail(function(){ 
+                // For my Reference
+                console.log("Failed query");
+                // [Temporary Fix] Notification for End Users
+                window.alert("Error: Failed query!");
+            });
     });
-
+/*
     // [REFACTOR] An click event handler when one of the locations is clicked on 
     // in the Menu Pane
     this.toggleMarker = function (index) {
@@ -274,12 +275,26 @@ var ViewModel = function () {
             infowindowIsOpen = true;
         }
     };
-
+*/
     // [REFACTOR] Automatically Updates the Locations as You Type into the Filter Textbox
     this.filterText = ko.observable("");
     this.filterEntries = function(){
         var input;
+        // Converts Input to UpperCase for Case-Insensitive Search
         input = this.filterText().toUpperCase();
+        /* 
+            - locationList.forEach(function(input){// Pass input to a computedObservable})
+            - computedObservable returns either true or false
+            -- true: entry.style.display = ""; / marker.setVisible(true);
+            -- false: entry.style.display = "none"; / marker.setVisible(false);
+            --- Maybe requires templates with display properties for simplicity.
+        */
+       this.locationList.forEach(function(entry){
+            var displayEntry = (entry.name().toUpperCase() == input) ? "true":"false";
+            this.entry.visible(displayEntry);
+            console.log(displayEntry);
+       });
+       /*
         entries = document.getElementsByClassName("entries");
         for (i=0; i<entries.length; i++){
             // Find the corresponding index for marker and entry
@@ -299,8 +314,110 @@ var ViewModel = function () {
             }
 
         }
+        */
     };
 
+    // [NEW] Adds marker to locationList()
+    this.addMarker= function(marker,index){
+        //console.log(this.locationList()[index]);
+    };
+};
+
+// [KEEP] Model - Defines the data for the ViewModel
+var Location = function(data) {
+    // [KEEP] To avoid changing the index.html yet
+    this.index = ko.observable(data.index);
+    this.name = ko.observable(data.name);
+    this.address = ko.observable(data.address);
+    this.phone = ko.observable(data.phone);
+    this.url = ko.observable(data.url);
+    this.description = ko.observable(data.desc);
+    this.position = ko.observable(data.position);
+
+    // Toggles Entry Display or Not Based on Filter Function
+    this.visible = ko.observable(true);
+    
+    // Necessary Function for Accordion to Have the Correct Data Target
+    this.dataTarget = ko.pureComputed({
+        read: function () {
+            return "#" + this.name();
+        },
+        owner: this
+    });
+};
+
+// [KEEP/REFACTOR] Stores the view Model in a function so that Google Maps can access it later
+globalAccess  = {viewModel: new ViewModel()};
+ko.applyBindings(globalAccess.viewModel);
+
+
+/**************************/
+/* OLD CODE FOR REFERENCE */
+/**************************/
+// FROM BINDINGS
+// ko.applyBindings(new ViewModel());
+
+// FROM LOCATION()
+/*
+    this.index = ko.observable(data.index);
+    this.name = ko.observable(data.name);
+    this.address = ko.observable(data.address);
+    this.phone = ko.observable(data.phone);
+    this.url = ko.observable(data.url);
+    this.description = ko.observable(data.desc);
+    this.position = ko.observable(data.position);
+    this.marker = ko.observable(data.marker);
+*/
+
+// FROM MARKERS()
+/*
+    // Creates (5) hardcoded markers
+    for (var i = 0; i < bookmarkLocations.length; i++){
+        // [REFACTOR] Marker Initializer
+        var marker = new google.maps.Marker({
+            position: bookmarkLocations[i].position,
+            map: map,
+            animation: google.maps.Animation.DROP,
+            index: i,
+        });
+
+        // [KEEP] Extends viewport boundary
+        bounds.extend(marker.position);
+
+        // [REFACTOR] Marker Event Handler
+        marker.addListener('click', function() {
+            toggleInfoWindow(this, infowindow);
+        });
+
+        // [REFACTOR] Hold the markers in an array
+        markers.push(marker);
+    }
+*/
+
+/*
+        marker.addListener('click', function() {
+            // toggleInfoWindow(this, infowindow);
+        });
+    // [REMOVE/DEPRACATE] Creates a function that displays the information of the clicked marker.
+    function toggleInfoWindow(marker, infowindow){
+        // Check if infowindow is not already opened on this marker.
+        if (infowindow.marker != marker) {
+            var info = globalAccess.viewModel.populate(marker.index);
+            infowindow.marker = marker;
+            infowindow.maxWidth = 200;
+            infowindow.setContent(info);
+            infowindow.open(map, marker);
+            infowindowIsOpen = true;
+            infowindow.addListener('closeclick', function () {
+                infowindow.marker = null;
+                infowindowIsOpen = false;
+            });
+        }
+    }
+*/
+
+// FROM VIEWMODEL()
+/*
     // [REFACTOR/REMOVE] A Function for Google Maps InfoWindow to Populate with Foursquare Info
     this.populate = function (index){
         var location;
@@ -314,29 +431,4 @@ var ViewModel = function () {
         var script = "<div id=" + index + "><p>" + name + "</p><p>" + address + "</p></div>"; 
         return script;
     };
-
-};
-
-// [KEEP] Model - Defines the data for the ViewModel
-var Location = function(data) {
-    // [REFACTOR] NEEDS REFACTORING
-    this.index = ko.observable(data.index);
-    this.name = ko.observable(data.name);
-    this.address = ko.observable(data.address);
-    this.phone = ko.observable(data.phone);
-    this.url = ko.observable(data.url);
-    this.description = ko.observable(data.desc);
-    this.position = ko.observable(data.position);
-    this.marker = ko.observable(data.marker);
-    this.dataTarget = ko.pureComputed({
-        read: function () {
-            return "#" + this.name();
-        },
-        owner: this
-    });
-};
-
-// [REFACTOR] Stores the view Model in a function so that Google Maps can access it later
-globalAccess  = {viewModel: new ViewModel()};
-ko.applyBindings(globalAccess.viewModel);
-//ko.applyBindings(new ViewModel());
+*/

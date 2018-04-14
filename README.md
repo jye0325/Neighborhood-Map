@@ -1,7 +1,7 @@
 
 # Neighborhood-Map
 
-#### v0.5.0-rc
+#### v0.6.0-rc [UNRELEASED]
 
 The **Neighborhood-Map** is a project written for **Udacity's Full Stack Developer Nanodegree Program**.
 

@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+## [] - 2018-04-
+### Added
+- Added error handler, `onerror="googleError()"`, to Google Maps callback in `index.html`.
+- Added variable in Location() Model to hold Google Maps Marker for easier access to marker functions.
+- Added `window.alert()` for end users when failed query occurs for Foursquare API.
 
 ## [0.5.1] - 2018-04-12
 ### Added
@@ -11,7 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [v0.5.0-rc] - 2018-04-11
 ### Added
 - Added filter function to the mobile site in `mobile/style.css`.
-- Added feature where a marker will open its' InfoWindow if you expand the corresponding accordian item.
+- Added feature where a marker will open its' InfoWindow if you expand the corresponding accordion item.
 
 ### Fixed
 - Fixed issue where markers were not displaying the correct location information.
@@ -22,7 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added variable `globalAccess` to point to the ViewModel and allow outside access to functions in the ViewModel.
 
 ### Changed
-- Placed accordian cards in a new `<div>` called entries to allow easier filtering in `index.html`.
+- Placed accordion cards in a new `<div>` called entries to allow easier filtering in `index.html`.
 - Changed `Knockout.Js` script source from 3.2 to the latest version.
 
 ### Fixed
@@ -34,12 +39,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [v0.3.1] - 2018-04-05
 ### Added
-- Added function to animate accordian display on mobile version when pressed.
+- Added function to animate accordion display on mobile version when pressed.
 
 ### Changed
 - Changed array of locations that are to be displayed on Google Maps in `app.js`.
 - Changed filter button location for mobile and web version in `index.html`.
-- Changed accordian style and display for mobile and web version in `index.html`.
+- Changed accordion style and display for mobile and web version in `index.html`.
 
 ### Fixed
 - Fixed accidental revert of `v0.3.0`.
@@ -55,7 +60,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added FourSquare API to the ViewModel.
 
 ### Changed
-- Changed the Menu Pane to an accordian style collapse.
+- Changed the Menu Pane to an accordion style collapse.
 - Changed the `.css` stylesheet rendered based on the type of device you are viewing the website on.
 
 ### Removed
