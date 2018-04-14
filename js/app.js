@@ -1,21 +1,20 @@
-// [KEEP] Function that Returns System Time
+// Function that Returns System Time
 function getHour () {
     var d = new Date();
     var h =  d.getHours();
     return h;
 }
 
-// [KEEP] Obtains the System Time
+// Obtains the System Time
 var hour = getHour();
 
 var map;
-var infowindow;
 var markers = [];
-var infowindowIsOpen = true;
+var bouncingMarker = null;
 
-// [KEEP] Google Map Initializer
+// Google Map Initializer
 function initMap() {
-    // [KEEP] Styles Google Maps based on day-time or night-time. 
+    // Styles Google Maps based on day-time or night-time. 
     var styles;
     if (hour <= 6 || hour >= 18){
         // Night-time
@@ -104,7 +103,7 @@ function initMap() {
         styles = [];
     }
 
-    // [KEEP] Creates a new instance of Google Maps
+    // Creates a new instance of Google Maps
     map = new google.maps.Map(document.getElementById('map'),{
         // Centered location is at my house
         center: {lat: 40.59784399999999, lng: -73.97898839999999},
@@ -112,14 +111,11 @@ function initMap() {
         mapTypeControl: false,
         styles: styles
     });
-/*
-    // [REMOVE/DEPRACATE] InfoWindow Initializer
-    infowindow = new google.maps.InfoWindow();
-*/
-    // [KEEP] Boundary Initializer
+
+    // Boundary Initializer
     var bounds = new google.maps.LatLngBounds();
     
-    // [NEW] Creates (5) Hardcoded Locations Using forEach()
+    // Creates (5) Hardcoded Locations Using forEach()
     bookmarkLocations.forEach(function(marker,index){
         marker = new google.maps.Marker({
             position: bookmarkLocations[index].position,
@@ -128,32 +124,38 @@ function initMap() {
             index: index,
         });
 
+        // Extends Viewport Boundaries
         bounds.extend(marker.position);
-
+        
+        // Toggle Bounce
         marker.addListener('click', function() {
             toggleBounce(this);
         });
-        
+
+        // Stores Markers in a Global Array
         markers.push(marker);
     });
 
-    // [KEEP] Fixes the viewport
+    // Fixes the Viewport
     map.fitBounds(bounds);
 
-    // [NEW] Toggle Bounce
+    // Toggle Bounce
     function toggleBounce(marker) {
-        // Needs a check to see if any other markers are bouncing.
+        // Checks if Any Other Marker is Bouncing.
+        if((bouncingMarker !== null ) && (bouncingMarker !== marker)){
+            bouncingMarker.setAnimation(null);
+            bouncingMarker = null;
+        }
         if (marker.getAnimation() !== null) {
           marker.setAnimation(null);
         } else {
           marker.setAnimation(google.maps.Animation.BOUNCE);
+          bouncingMarker = marker;
         }
       }
 }
 
-// [KEEP/REFACTOR] Five Hardcoded Locations 
-// - By default, these locations will have default information in case of:
-//   Foursquare API Failed Query
+// Five Hardcoded Locations
 var bookmarkLocations = [
     {
         // L&B Spumoni Gardens
@@ -207,29 +209,20 @@ var bookmarkLocations = [
     }
 ];
 
-// [KEEP] ViewModel - Defines the data and behavior of my UI
+// ViewModel - Defines the data and behavior of my UI
 var ViewModel = function () {
-    // [REMOVE?] Haven't really used this.
-    // var self = this;
+    var self = this;
 
-    // [KEEP] API KEYS for FourSquare
+    // API KEYS for FourSquare
     var client_id = 'DI2FHGCELBERLPRHWBRH1DBXEMMHML1OY1CUPMA2K31H4YN2';
     var client_secret = 'RILIOHICFEPSBPONF0Q0CTTRQJM5HO44RDAAJLGGD2VMGKC5';
 
-    // [KEEP] Creates an observableArray to Hold the Locations for the Menu Pane
+    // Creates an observableArray to Hold the Locations for the Menu Pane
     this.locationList = ko.observableArray([]);
-/*
-    // [NEW] Returns Items to index.html if Filter Returns True
-    this.displayedLocation = ko.computed(function(){
-        this.locationList.forEach(
-            function(){
-            }
-        );
-    }).extend({notify:'always'});
-*/
-    // [KEEP] Passes the Initial (5) Hardcoded Locations into the observableArray
+
+    // Passes the Initial (5) Hardcoded Locations into the observableArray
     bookmarkLocations.forEach(
-        function(location){
+        function(location, index){
             var lat = location.position.lat;
             var lng = location.position.lng;
             $.getJSON("https://api.foursquare.com/v2/venues/search?client_id="+client_id+"&client_secret="+client_secret+"&ll="+lat+","+lng+"&v=20180307", 
@@ -243,6 +236,7 @@ var ViewModel = function () {
                         location.address = venue.location.formattedAddress[0] + ", " + venue.location.formattedAddress[1];
                         location.phone = venue.contact.formattedPhone;
                         location.url = venue.url;
+                        location.marker = markers[index]; // Must do this since Google Maps loads faster.
                         self.locationList.push( new Location(location) );
                     } 
                     else{
@@ -259,73 +253,31 @@ var ViewModel = function () {
                 window.alert("Error: Failed query!");
             });
     });
-/*
-    // [REFACTOR] An click event handler when one of the locations is clicked on 
+
+    // A Click Event Handler When One of the Location is Clicked on 
     // in the Menu Pane
     this.toggleMarker = function (index) {
-        if(infowindowIsOpen == true){
-            // If InfoWindow is already open
-            infowindow.close();
-            infowindow.marker = null;
-            infowindowIsOpen = false;
-        } else {
-            // If InfoWindow is not open
-            var marker = markers[index];
-            google.maps.event.trigger(marker, 'click');
-            infowindowIsOpen = true;
-        }
+        var marker = markers[index];
+        google.maps.event.trigger(marker, 'click');
     };
-*/
-    // [REFACTOR] Automatically Updates the Locations as You Type into the Filter Textbox
+
+    // Automatically Updates the Locations as You Type into the Filter Textbox
     this.filterText = ko.observable("");
     this.filterEntries = function(){
         var input;
         // Converts Input to UpperCase for Case-Insensitive Search
         input = this.filterText().toUpperCase();
-        /* 
-            - locationList.forEach(function(input){// Pass input to a computedObservable})
-            - computedObservable returns either true or false
-            -- true: entry.style.display = ""; / marker.setVisible(true);
-            -- false: entry.style.display = "none"; / marker.setVisible(false);
-            --- Maybe requires templates with display properties for simplicity.
-        */
-       this.locationList.forEach(function(entry){
-            var displayEntry = (entry.name().toUpperCase() == input) ? "true":"false";
-            this.entry.visible(displayEntry);
-            console.log(displayEntry);
+        this.locationList().forEach(function(entry){
+            var name = entry.name().toUpperCase();
+            var displayEntry = (name.includes(input)) ? true:false;
+            entry.visible(displayEntry);
+            entry.marker().setVisible(displayEntry);
        });
-       /*
-        entries = document.getElementsByClassName("entries");
-        for (i=0; i<entries.length; i++){
-            // Find the corresponding index for marker and entry
-            var eIndex, entry;
-            entry = entries[i].getElementsByTagName("span")[0];
-            eIndex = entries[i].getElementsByTagName("div")[1].getAttribute("id");
-            if(entry.innerHTML.toUpperCase().indexOf(input) > -1){
-                entries[i].style.display = "";
-                markers[eIndex].setMap(map);
-                // Markers will not bounce when clearing the filter input
-                if (input != ""){
-                    markers[eIndex].setAnimation(google.maps.Animation.BOUNCE);
-                }
-            } else {
-                entries[i].style.display = "none";
-                markers[eIndex].setMap(null);
-            }
-
-        }
-        */
-    };
-
-    // [NEW] Adds marker to locationList()
-    this.addMarker= function(marker,index){
-        //console.log(this.locationList()[index]);
     };
 };
 
-// [KEEP] Model - Defines the data for the ViewModel
+// Model - Defines the Data for the viewModel
 var Location = function(data) {
-    // [KEEP] To avoid changing the index.html yet
     this.index = ko.observable(data.index);
     this.name = ko.observable(data.name);
     this.address = ko.observable(data.address);
@@ -334,7 +286,10 @@ var Location = function(data) {
     this.description = ko.observable(data.desc);
     this.position = ko.observable(data.position);
 
-    // Toggles Entry Display or Not Based on Filter Function
+    // Creates a Pointer for Marker to Allow Access from Knockout.JS
+    this.marker = ko.observable(data.marker);
+
+    // Toggles Entry Display Based on Filter Function
     this.visible = ko.observable(true);
     
     // Necessary Function for Accordion to Have the Correct Data Target
@@ -346,89 +301,6 @@ var Location = function(data) {
     });
 };
 
-// [KEEP/REFACTOR] Stores the view Model in a function so that Google Maps can access it later
+// Stores the viewModel in a Function so that Google Maps can Access it Later
 globalAccess  = {viewModel: new ViewModel()};
 ko.applyBindings(globalAccess.viewModel);
-
-
-/**************************/
-/* OLD CODE FOR REFERENCE */
-/**************************/
-// FROM BINDINGS
-// ko.applyBindings(new ViewModel());
-
-// FROM LOCATION()
-/*
-    this.index = ko.observable(data.index);
-    this.name = ko.observable(data.name);
-    this.address = ko.observable(data.address);
-    this.phone = ko.observable(data.phone);
-    this.url = ko.observable(data.url);
-    this.description = ko.observable(data.desc);
-    this.position = ko.observable(data.position);
-    this.marker = ko.observable(data.marker);
-*/
-
-// FROM MARKERS()
-/*
-    // Creates (5) hardcoded markers
-    for (var i = 0; i < bookmarkLocations.length; i++){
-        // [REFACTOR] Marker Initializer
-        var marker = new google.maps.Marker({
-            position: bookmarkLocations[i].position,
-            map: map,
-            animation: google.maps.Animation.DROP,
-            index: i,
-        });
-
-        // [KEEP] Extends viewport boundary
-        bounds.extend(marker.position);
-
-        // [REFACTOR] Marker Event Handler
-        marker.addListener('click', function() {
-            toggleInfoWindow(this, infowindow);
-        });
-
-        // [REFACTOR] Hold the markers in an array
-        markers.push(marker);
-    }
-*/
-
-/*
-        marker.addListener('click', function() {
-            // toggleInfoWindow(this, infowindow);
-        });
-    // [REMOVE/DEPRACATE] Creates a function that displays the information of the clicked marker.
-    function toggleInfoWindow(marker, infowindow){
-        // Check if infowindow is not already opened on this marker.
-        if (infowindow.marker != marker) {
-            var info = globalAccess.viewModel.populate(marker.index);
-            infowindow.marker = marker;
-            infowindow.maxWidth = 200;
-            infowindow.setContent(info);
-            infowindow.open(map, marker);
-            infowindowIsOpen = true;
-            infowindow.addListener('closeclick', function () {
-                infowindow.marker = null;
-                infowindowIsOpen = false;
-            });
-        }
-    }
-*/
-
-// FROM VIEWMODEL()
-/*
-    // [REFACTOR/REMOVE] A Function for Google Maps InfoWindow to Populate with Foursquare Info
-    this.populate = function (index){
-        var location;
-        for(i = 0; i < this.locationList().length; i++){
-            if(this.locationList()[i].index() == index){
-                location = this.locationList()[i];
-            }
-        }
-        var name = location.name();
-        var address = location.address();
-        var script = "<div id=" + index + "><p>" + name + "</p><p>" + address + "</p></div>"; 
-        return script;
-    };
-*/
