@@ -3,11 +3,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
-## [] - 2018-04-
+## [0.6.0-rc] - 2018-04-13
 ### Added
 - Added error handler, `onerror="googleError()"`, to Google Maps callback in `index.html`.
 - Added variable in Location() Model to hold Google Maps Marker for easier access to marker functions.
 - Added `window.alert()` for end users when failed query occurs for Foursquare API.
+- Added coded to `toggleBounce()` to ensure only one marker is bouncing to avoid confusion.
+
+### Changed
+- Changed majority of `app.js` to comply with Udacity's Neighborhood Map Specifications.
+- Changed marker's functionality from infoWindow display to bounce animation.
+- Changed Filter Function to update DOM using observable, `visible`.
+
+### Removed
+- Removed infoWindow for simplicity of the program.
 
 ## [0.5.1] - 2018-04-12
 ### Added
