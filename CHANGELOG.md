@@ -3,6 +3,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+
+## [0.7.0-rc] - 2018-04-14
+### Added
+- Added Google Places API.
+- Added back `infoWindows` to Google Map markers. By default, the infoWindow will display Google Places API information about the location while the List-View displays Foursquare API information. Google Places API information will be hardcoded due to Cross Origin Resource Sharing issues.
+
+### Fixed
+- Fixed issue where `googleError()` was not coded in.
+
 ## [0.6.0-rc] - 2018-04-13
 ### Added
 - Added error handler, `onerror="googleError()"`, to Google Maps callback in `index.html`.
@@ -91,8 +100,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added preliminary files `index.html` and `app.js`.
 - Added `.gitignore` to prevent `.DS_Store` from being pushed to GitHub.
 
-[Unreleased]: https://github.com/jye0325/Neighborhood-Map/compare/v0.5.0...HEAD
-[v0.5.0-rc]: https://github.com/jye0325/Neighborhood-Map/compare/v0.4.0...v0.5.0
+[Unreleased]: https://github.com/jye0325/Neighborhood-Map/compare/v0.7.0-rc...HEAD
+[v0.7.0-rc]: https://github.com/jye0325/Neighborhood-Map/compare/v0.6.0-rc...v0.7.0-rc
+[v0.6.0-rc]: https://github.com/jye0325/Neighborhood-Map/compare/v0.5.0-rc...v0.6.0-rc
+[v0.5.1]: https://github.com/jye0325/Neighborhood-Map/compare/v0.5.0-rc...v0.5.1
+[v0.5.0-rc]: https://github.com/jye0325/Neighborhood-Map/compare/v0.4.0...v0.5.0-rc
 [v0.4.0]: https://github.com/jye0325/Neighborhood-Map/compare/v0.3.1...v0.4.0
 [v0.3.1]: https://github.com/jye0325/Neighborhood-Map/compare/v0.3.0...v0.3.1
 [v0.3.0]: https://github.com/jye0325/Neighborhood-Map/compare/v0.2.0...v0.3.0

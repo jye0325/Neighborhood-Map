@@ -14,19 +14,19 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
-    <!-- Menu Button [KEEP] -->
+    <!-- Menu Button -->
     <div class="menuButton" onclick="myFunction(this)" id="menu-button">
         <div class="bar1"></div>
         <div class="bar2"></div>
         <div class="bar3"></div>
     </div>
     
-    <!-- Filter Area [REFACTOR] -->
+    <!-- Filter Area -->
     <div class="filter" id="filter">
         <input type="text" data-bind="textInput: filterText, event: {keyup:filterEntries}" placeholder="Filter Locations">
      </div>
     
-    <!-- Menu Area [REFACTOR] -->
+    <!-- Menu Area -->
     <div class="menuPane" id="accordion">
         <div class="list" data-bind="foreach: locationList">
             <div class="entries" data-bind="visible: visible">
@@ -65,9 +65,9 @@
     <!-- Application JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="js/app.js"></script>
-    <!-- Google Maps API [ISSUE FIXED] -->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDI30dQAKyuiSaQrxJzjidYslz-PkLpW6s&v=3&callback=initMap" onerror="googleError()"></script>
-    <!-- Script for Menu Button Animation [KEEP/REFACTOR] -->
+    <!-- Google Maps API -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDI30dQAKyuiSaQrxJzjidYslz-PkLpW6s&v=3&libraries=places&callback=initMap" onerror="googleError()"></script>
+    <!-- Script for Menu Button Animation -->
     <script>
         function myFunction(x) {
             x.classList.toggle("change");
@@ -75,6 +75,10 @@
             z = parent.document.getElementById("filter");
             y.classList.toggle("show");
             z.classList.toggle("show");
+        }
+
+        function googleError(){
+            window.alert("Error: Failed to load Google Maps API.")
         }
     </script>
 </body>

@@ -1,11 +1,11 @@
 
 # Neighborhood-Map
 
-#### v0.6.0-rc
+#### v0.7.0-rc
 
 The **Neighborhood-Map** is a project written for **Udacity's Full Stack Developer Nanodegree Program**.
 
-In this project, a single web application will display a menu pane populated with five hardcoded locations and a `Google Map` with markers displaying those five locations. Upon clicking the a particular location on the menu pane, the location will expand using an accordion styled card which will display information fetched using `Foursquare API`. The corresponding marker will also bounce to show you where the location is. Use the filter function to filter through the entries which will temporarily remove markers and entries from display.
+In this project, a single web application will display a menu pane populated with five hardcoded locations and a `Google Map` with markers displaying those five locations. Upon clicking the a particular location on the menu pane, the location will expand using an accordion styled card which will display information fetched using `Foursquare API`. The corresponding marker will also bounce to show you where the location is and display an InfoWindow with hardcoded information retrieved from Google Maps Places API. Use the filter function to filter through the entries which will temporarily remove markers and entries from display.
 
 ## Known Issues
 - Menu button does not display menu when using Google Chrome's and Apple Safari's Responsive Design feature to switch the desktop version to a mobile version. **User must refresh the site while in the mobile version only once (if swtiching from desktop to mobile version via Responsive Design browser feature) for it to function properly.** 

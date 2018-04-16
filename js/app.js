@@ -9,6 +9,7 @@ function getHour () {
 var hour = getHour();
 
 var map;
+var infoWindow;
 var markers = [];
 var bouncingMarker = null;
 
@@ -115,13 +116,19 @@ function initMap() {
     // Boundary Initializer
     var bounds = new google.maps.LatLngBounds();
     
+    // InfowWindow Initializer
+    infoWindow = new google.maps.InfoWindow();
+
     // Creates (5) Hardcoded Locations Using forEach()
-    bookmarkLocations.forEach(function(marker,index){
-        marker = new google.maps.Marker({
-            position: bookmarkLocations[index].position,
+    bookmarkLocations.forEach(function(location,index){ 
+        var content = "<span><b>"+location.name+"</b></span><hr><span>Place ID: "+location.id+"</span><br><span>"+location.address+"</span>";
+
+        var marker = new google.maps.Marker({
+            position: location.position,
             map: map,
             animation: google.maps.Animation.DROP,
             index: index,
+            content: content
         });
 
         // Extends Viewport Boundaries
@@ -130,6 +137,7 @@ function initMap() {
         // Toggle Bounce
         marker.addListener('click', function() {
             toggleBounce(this);
+            toggleInfoWindow(this, infoWindow);
         });
 
         // Stores Markers in a Global Array
@@ -153,6 +161,19 @@ function initMap() {
           bouncingMarker = marker;
         }
       }
+
+    // Toggle InfoWindow
+    function toggleInfoWindow(marker, infowindow){
+        if (infowindow.marker != marker) {
+            infowindow.marker = marker;
+            infowindow.maxWidth = 200;
+            infowindow.setContent(marker.content);
+            infowindow.open(map, marker);
+            infowindow.addListener('closeclick', function () {
+                infowindow.marker = null;
+            });
+        }
+    }
 }
 
 // Five Hardcoded Locations
@@ -160,50 +181,40 @@ var bookmarkLocations = [
     {
         // L&B Spumoni Gardens
         name: 'L&B Spumoni Gardens',
-        address: '',
-        phone: '',
-        url: '',
-        description: '', 
+        address: '2725 86th St, Brooklyn, NY 11223, USA',
+        id: 'ChIJqz1lIlVEwokRyXTXxNS4Rb0',
         position: {lat: 40.594712, lng: -73.981313},
         index: 0
     },
     {
         // Barclay's Center
         name: 'Barclay\'s Center',
-        address: '',
-        phone: '',
-        url: '',
-        description: '', 
+        address: '620 Atlantic Ave, Brooklyn, NY 11217, USA',
+        id: 'ChIJo3lEaa5bwokRnuZS2oWTlLk',
         position: {lat: 40.682784, lng: -73.975825},
         index: 1
     },
     {
         // Ichiran
         name: 'Ichiran',
-        address: '',
-        phone: '',
-        url: '',
-        description: '', 
+        address: '374 Johnson Ave, Brooklyn, NY 11206, USA',
+        id: 'ChIJDwxnNABcwokRnRmtxisbW',
         position: {lat: 40.70738, lng: -73.93323},
         index: 2
     },
     {
         // Peter Luger Steak House
         name: 'Peter Luger Steak House',
-        address: '',
-        phone: '',
-        url: '',
-        description: '', 
+        address: '178 Broadway, Brooklyn, NY 11211, USA',
+        place: 'ChIJR_bK295bwokR8gM6QgEdmkY', 
         position: {lat: 40.709819, lng: -73.962467},
         index: 3
     },
     {
         // Grimaldi's Pizzaria
         name: 'Grimaldi\'s Pizzaria',
-        address: '',
-        phone: '',
-        url: '',
-        description: '', 
+        address: '1 Front St, Brooklyn, NY 11201, USA',
+        place: 'ChIJgzfayTBawokR9jTsF6hLf40', 
         position: {lat: 40.702604, lng: -73.99322},
         index: 4
     }
@@ -225,13 +236,14 @@ var ViewModel = function () {
         function(location, index){
             var lat = location.position.lat;
             var lng = location.position.lng;
+
+            // FOURSQUARE API
             $.getJSON("https://api.foursquare.com/v2/venues/search?client_id="+client_id+"&client_secret="+client_secret+"&ll="+lat+","+lng+"&v=20180307", 
                 function( data ) {
                     var code = data.meta.code;
                     var venue = data.response.venues[0];
                     var FOURSQUARE_ERROR_REFERENCE = 'https://developer.foursquare.com/docs/api/troubleshooting/errors';
                     if(code == '200'){
-                        console.log('Successfully query of JSON response for: ' + venue.name);
                         location.name = venue.name;
                         location.address = venue.location.formattedAddress[0] + ", " + venue.location.formattedAddress[1];
                         location.phone = venue.contact.formattedPhone;
@@ -240,19 +252,16 @@ var ViewModel = function () {
                         self.locationList.push( new Location(location) );
                     } 
                     else{
-                        // For my Reference
-                        console.log('Error ' + code + ': Please see ' + FOURSQUARE_ERROR_REFERENCE + 'for more informaiton');
                         // [Temporary Fix] Notification for End Users
                         window.alert("Error code: " + code + " -- " + FOURSQUARE_ERROR_REFERENCE);
                     }
                 })
-            .fail(function(){ 
-                // For my Reference
-                console.log("Failed query");
+            .fail(function(){
                 // [Temporary Fix] Notification for End Users
-                window.alert("Error: Failed query!");
+                window.alert("Error: Failed Foursquare API query!");
             });
-    });
+        }
+    );
 
     // A Click Event Handler When One of the Location is Clicked on 
     // in the Menu Pane
